@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-gradient: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+  --card-bg: rgba(30, 41, 59, 0.6);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --accent-cyan: #22d3ee;
+  --accent-emerald: #34d399;
+  --accent-orange: #fb923c;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f172a;
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Glassmorphism Card Utility */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(34, 211, 238, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(34, 211, 238, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Inputs styling */
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease-in-out;
+}
+
+.glass-input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+  outline: none;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow: 0 0 4px rgba(34, 211, 238, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(34, 211, 238, 0.9), 0 0 25px rgba(34, 211, 238, 0.4);
+  }
+}
+
+.glow-text-cyan {
+  color: var(--accent-cyan);
+  animation: pulse-glow 3s infinite;
+}
+
+/* System Status Ticker */
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ticker-item {
+  display: inline-block;
+  padding: 0.5rem 2rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Chatbox Styles */
+.chatbox-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+}
+
+.chat-toggle-btn {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.chat-toggle-btn:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 24px rgba(6, 182, 212, 0.6);
+}
+
+.chat-window {
+  width: 350px;
+  height: 480px;
+  background: rgba(21, 32, 54, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-window.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.chat-bubble.bot {
+  background: rgba(30, 41, 59, 0.9);
+  color: var(--text-primary);
+  border-top-left-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-bubble.user {
+  background: linear-gradient(135deg, #0e7490 0%, #1d4ed8 100%);
+  color: #fff;
+  border-top-right-radius: 0;
+  margin-left: auto;
+}
+
+/* Sidebar navigation */
+.sidebar-link {
+  transition: all 0.2s ease-in-out;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.sidebar-link.active {
+  background: rgba(6, 182, 212, 0.1);
+  border-left-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}

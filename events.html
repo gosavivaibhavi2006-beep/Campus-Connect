@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Events Board - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-6">
+  
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <span class="text-xs text-orange-400 font-semibold uppercase tracking-wider font-mono">Academic / Calendars</span>
+      <h1 class="text-2xl font-bold text-white flex items-center gap-2 mt-1">
+        <i class="fa-regular fa-calendar-check text-orange-400"></i> Upcoming Campus Events
+      </h1>
+    </div>
+    <a href="{{ url_for('student_dashboard') }}" class="px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 text-xs font-semibold rounded-lg transition-all">
+      <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <div class="glass-card rounded-xl overflow-hidden">
+    <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/10">
+      <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Event Roster</h3>
+      <span class="text-[10px] text-slate-450 font-mono">{{ events|length }} Events Scheduled</span>
+    </div>
+
+    <div class="divide-y divide-slate-850">
+      {% if events %}
+        {% for ev in events %}
+        <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-900/10 transition-colors">
+          <div class="space-y-1.5 max-w-xl">
+            <div class="flex items-center gap-2.5">
+              <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono
+                {% if ev.type == 'Academic' %}bg-cyan-950/40 border border-cyan-500/20 text-cyan-400
+                {% elif ev.type == 'Placement' %}bg-emerald-950/40 border border-emerald-500/20 text-emerald-400
+                {% else %}bg-orange-950/40 border border-orange-500/20 text-orange-400{% endif %}">
+                {{ ev.type }}
+              </span>
+              <span class="text-[10px] text-slate-500 font-mono"><i class="fa-regular fa-clock text-[9px] mr-1"></i>{{ ev.date }}</span>
+            </div>
+            
+            <h4 class="text-sm font-bold text-slate-250">{{ ev.title }}</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">{{ ev.description }}</p>
+          </div>
+          
+          <div class="text-[10px] text-slate-500 font-mono flex-shrink-0">
+            <span>Organizer: {{ ev.created_by }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="p-12 text-center text-slate-550 text-sm">
+          No campus events are currently listed in the calendar.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

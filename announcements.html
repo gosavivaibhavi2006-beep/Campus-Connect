@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Notice Board - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-6">
+  
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <span class="text-xs text-indigo-400 font-semibold uppercase tracking-wider font-mono">Academic / Notices</span>
+      <h1 class="text-2xl font-bold text-white flex items-center gap-2 mt-1">
+        <i class="fa-solid fa-bullhorn text-indigo-400"></i> Bulletin Board Notices
+      </h1>
+    </div>
+    <a href="{{ url_for('student_dashboard') }}" class="px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 text-xs font-semibold rounded-lg transition-all">
+      <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <div class="glass-card rounded-xl overflow-hidden">
+    <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/10">
+      <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Student Bulletins</h3>
+      <span class="text-[10px] text-slate-450 font-mono">{{ announcements|length }} Active notices</span>
+    </div>
+
+    <div class="divide-y divide-slate-850">
+      {% if announcements %}
+        {% for ann in announcements %}
+        <div class="p-6 space-y-2.5 hover:bg-slate-900/10 transition-colors">
+          <div class="flex justify-between items-start gap-4">
+            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono bg-slate-800 text-slate-400 border border-slate-700">
+              Target: {{ ann.target_role }}
+            </span>
+            <span class="text-[10px] text-slate-500 font-mono"><i class="fa-regular fa-clock text-[9px] mr-1"></i>{{ ann.date_posted.strftime('%Y-%m-%d %H:%M') }}</span>
+          </div>
+          
+          <h4 class="text-sm font-bold text-slate-200 leading-snug">{{ ann.title }}</h4>
+          <p class="text-xs text-slate-450 leading-relaxed">{{ ann.content }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="p-12 text-center text-slate-550 text-sm">
+          No announcements are active for your profile at the moment.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Campus Connect - Student Portfolio{% endblock %}</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="flex flex-col min-height-screen">
+
+  <!-- System Status Ticker -->
+  <div class="ticker-wrap flex items-center justify-between text-xs py-1 px-4 text-slate-400">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+      <span id="system-status-ticker">{{ system_ticker }}</span>
+    </div>
+    <div class="hidden md:block">
+      <span>Portal Version 1.0.4 (Dev Edition)</span>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="glass-card sticky top-0 z-40 border-b border-slate-800 px-6 py-4 flex items-center justify-between bg-slate-900/80">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+        <i class="fa-solid fa-graduation-cap text-white text-xl"></i>
+      </div>
+      <div>
+        <a href="/" class="text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-cyan-400 bg-clip-text text-transparent tracking-wide">CAMPUS CONNECT</a>
+        <span class="text-xs block text-slate-400 font-mono tracking-wider -mt-1">PORTFOLIO MATRIX</span>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <div class="flex items-center gap-6">
+      <a href="/" class="text-slate-300 hover:text-cyan-400 text-sm font-medium transition-colors">Home</a>
+      
+      {% if session.user_id %}
+        {% if session.role == 'admin' %}
+          <a href="{{ url_for('admin_dashboard') }}" class="text-slate-300 hover:text-cyan-400 text-sm font-medium transition-colors">Admin Dashboard</a>
+        {% elif session.role == 'faculty' %}
+          <a href="{{ url_for('faculty_dashboard') }}" class="text-slate-300 hover:text-cyan-400 text-sm font-medium transition-colors">Faculty Portal</a>
+        {% else %}
+          <a href="{{ url_for('student_dashboard') }}" class="text-slate-300 hover:text-cyan-400 text-sm font-medium transition-colors">Student Profile</a>
+        {% endif %}
+        
+        <div class="h-4 w-px bg-slate-800"></div>
+        
+        <div class="flex items-center gap-3">
+          <span class="text-slate-400 text-sm font-mono"><i class="fa-regular fa-user text-xs mr-1"></i>{{ session.username }}</span>
+          <a href="{{ url_for('logout') }}" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-semibold transition-all">Logout</a>
+        </div>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="text-slate-300 hover:text-cyan-400 text-sm font-medium transition-colors">Login</a>
+        <a href="{{ url_for('register') }}" class="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-semibold shadow-lg shadow-cyan-500/10 transition-all">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="max-w-7xl mx-auto px-6 mt-4 w-full">
+        {% for category, message in messages %}
+          <div class="p-4 rounded-lg flex items-center justify-between {% if category == 'error' %}bg-red-950/40 border border-red-500/20 text-red-300{% elif category == 'success' %}bg-emerald-950/40 border border-emerald-500/20 text-emerald-300{% else %}bg-slate-800/40 border border-slate-700 text-slate-300{% endif %}">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid {% if category == 'error' %}fa-circle-xmark{% elif category == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %}"></i>
+              <span class="text-sm font-medium">{{ message }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white transition-colors">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Core Content Block -->
+  <main class="flex-grow py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-slate-900 bg-slate-950/50 py-6 text-center text-xs text-slate-500 mt-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <span>&copy; {{ now_year }} Campus Connect Dashboard. All Rights Reserved.</span>
+      </div>
+      <div>
+        <span class="font-mono">Developed & Maintained by <strong class="text-slate-400">Vaibhavi Gosavi (Admin)</strong></span>
+      </div>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-cyan-400 transition-colors">Terms</a>
+        <a href="#" class="hover:text-cyan-400 transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-cyan-400 transition-colors">System Health</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chatbot Drawer (Web Speech Assistant) -->
+  <div class="chatbox-container">
+    <!-- Trigger Button -->
+    <button id="chat-toggle" class="chat-toggle-btn w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl focus:outline-none">
+      <i class="fa-solid fa-comments"></i>
+    </button>
+
+    <!-- Chat Dialog Window -->
+    <div id="chat-window" class="chat-window absolute bottom-16 right-0">
+      <!-- Chat Header -->
+      <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <div>
+            <h4 class="text-sm font-semibold text-white leading-tight">Campus AI Assistant</h4>
+            <span class="text-[10px] text-slate-400 block font-mono">NLP Engine Online</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="close-chat" class="text-slate-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Body -->
+      <div id="chat-messages" class="chat-messages space-y-2">
+        <div class="chat-bubble bot">
+          Hi! I am your AI campus portfolio companion. Ask me details about your <strong>GPA</strong>, <strong>attendance</strong>, <strong>portfolio projects</strong>, or <strong>upcoming events</strong>!
+        </div>
+      </div>
+
+      <!-- Speech Settings Panel -->
+      <div class="px-4 py-1.5 bg-slate-900/50 border-t border-b border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="speak-response-toggle" class="rounded border-slate-700 bg-slate-800 text-cyan-600 focus:ring-cyan-500">
+          <span>Read-Aloud Responses</span>
+        </label>
+        <span class="text-cyan-400">Web Speech API</span>
+      </div>
+
+      <!-- Input Actions Panel -->
+      <div class="p-3 border-t border-slate-800/80 flex items-center gap-2 bg-slate-950/40">
+        <!-- Voice Record Button -->
+        <button id="voice-assistant-btn" class="w-10 h-10 rounded-lg bg-gray-800 hover:bg-gray-700 text-slate-300 flex items-center justify-center transition-all focus:outline-none" title="Hold to Speak (Voice Input)">
+          <i class="fa-solid fa-microphone text-base"></i>
+        </button>
+        <!-- Text Input -->
+        <input type="text" id="chat-input" placeholder="Ask question..." class="flex-grow h-10 px-3 rounded-lg bg-slate-900/80 border border-slate-800 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder-slate-500">
+        <!-- Send Button -->
+        <button id="send-chat" class="w-10 h-10 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white flex items-center justify-center transition-all focus:outline-none">
+          <i class="fa-solid fa-paper-plane text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom JS -->
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

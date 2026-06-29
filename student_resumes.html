@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Student Resumes - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <span class="text-xs text-cyan-400 font-semibold uppercase tracking-wider font-mono">Faculty / Resume Review</span>
+      <h1 class="text-2xl font-bold text-white flex items-center gap-2 mt-1">
+        <i class="fa-solid fa-file-lines text-cyan-400"></i> Department Resumes
+      </h1>
+    </div>
+    <a href="{{ url_for('faculty_dashboard') }}" class="px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 text-xs font-semibold rounded-lg transition-all">
+      <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <div class="glass-card p-6 rounded-xl bg-slate-950/80 border border-slate-800 overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-900/70 border-b border-slate-800 text-[10px] uppercase tracking-wider text-slate-400 font-mono">
+          <th class="py-4 px-5">Student</th>
+          <th class="py-4 px-5">Roll No</th>
+          <th class="py-4 px-5">Department</th>
+          <th class="py-4 px-5">GPA</th>
+          <th class="py-4 px-5">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800/60 text-xs text-slate-300">
+        {% if students %}
+          {% for stu in students %}
+          <tr class="hover:bg-slate-900/20 transition-colors">
+            <td class="py-4 px-5">
+              <div class="font-semibold text-slate-100">{{ stu.name }}</div>
+              <div class="text-[10px] text-slate-500 font-mono">{{ stu.user.email }}</div>
+            </td>
+            <td class="py-4 px-5 font-mono text-slate-300">{{ stu.roll_no }}</td>
+            <td class="py-4 px-5 text-slate-300">{{ stu.department }}</td>
+            <td class="py-4 px-5 text-cyan-300 font-semibold">{{ stu.gpa }}</td>
+            <td class="py-4 px-5 text-right">
+              <a href="{{ url_for('view_resume', student_id=stu.id) }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-semibold transition-all">
+                <i class="fa-solid fa-file-lines"></i> View Resume
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" class="py-8 text-center text-slate-500">No students found in your department.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

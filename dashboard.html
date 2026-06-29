@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - {{ profile.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+  
+  <!-- Profile Welcome Header -->
+  <div class="glass-card p-6 rounded-2xl mb-8 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div class="absolute -top-12 -right-12 w-28 h-28 bg-cyan-500/10 rounded-full blur-2xl"></div>
+    
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-cyan-500/25">
+        <i class="fa-solid fa-user-graduate"></i>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-white">{{ profile.name }}</h1>
+        <p class="text-xs text-slate-400 font-mono mt-0.5">Roll No: {{ profile.roll_no }} &middot; {{ profile.department }} Department (Semester {{ profile.semester }})</p>
+      </div>
+    </div>
+
+    <!-- Quick action buttons -->
+    <div class="flex flex-wrap gap-2">
+      <a href="{{ url_for('student_profile') }}" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-user-pen"></i> Edit Profile & Projects
+      </a>
+      <a href="{{ url_for('student_feedback') }}" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-regular fa-comment-dots"></i> Feedback
+      </a>
+      <a href="{{ url_for('student_resources') }}" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-book-open"></i> Resources
+      </a>
+      <a href="{{ url_for('student_resume') }}" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 border border-cyan-500 text-xs font-semibold text-white transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-file-lines"></i> View Resume
+      </a>
+      <a href="{{ url_for('student_resume') }}#upload-resume" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 border border-emerald-500 text-xs font-semibold text-white transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-file-arrow-up"></i> Upload Resume
+      </a>
+    </div>
+  </div>
+
+  <!-- Dashboard Overview Cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="glass-card p-5 rounded-xl border border-slate-800">
+      <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider font-mono block mb-1">Total Projects</span>
+      <span class="text-3xl font-extrabold text-white">{{ projects|length }}</span>
+    </div>
+    
+    <div class="glass-card p-5 rounded-xl border border-slate-800">
+      <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider font-mono block mb-1">Skills Configured</span>
+      <span class="text-3xl font-extrabold text-white">{{ skills|length }}</span>
+    </div>
+
+    <div class="glass-card p-5 rounded-xl border border-slate-800">
+      <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider font-mono block mb-1">Attendance Rate</span>
+      <span class="text-3xl font-extrabold text-white {% if attendance_percentage < 75 %}text-orange-400{% else %}text-emerald-400{% endif %}">{{ attendance_percentage }}%</span>
+    </div>
+
+    <div class="glass-card p-5 rounded-xl border border-slate-800">
+      <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider font-mono block mb-1">Cumulative GPA</span>
+      <span class="text-3xl font-extrabold text-white">{{ profile.gpa }}</span>
+    </div>
+  </div>
+
+  <!-- Primary Dashboard Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Left Section: Projects Feed (Showcase Gallery) -->
+    <div class="lg:col-span-2 space-y-6">
+      
+      <!-- Skill Indicators (Adapted Spice Level Meter) -->
+      <div class="glass-card p-6 rounded-xl">
+        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider font-mono mb-4 pb-2 border-b border-slate-800">
+          <i class="fa-solid fa-fire text-orange-500 mr-1"></i> Developer Skill Level Index
+        </h3>
+        <p class="text-xs text-slate-400 mb-6">
+          Registered skill matrices showcasing proficiency levels configured by faculty assessors:
+        </p>
+
+        <div class="flex flex-wrap gap-3">
+          {% if skills %}
+            {% for skill in skills %}
+            <div class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between gap-4 text-xs font-medium hover:border-cyan-500/50 transition-colors">
+              <span class="text-slate-200 font-semibold">{{ skill.name }}</span>
+              <span class="text-xs select-none">
+                {% if skill.level == 1 %}
+                  🔥<span class="opacity-20">🔥🔥</span>
+                {% elif skill.level == 2 %}
+                  🔥🔥<span class="opacity-20">🔥</span>
+                {% else %}
+                  🔥🔥🔥
+                {% endif %}
+              </span>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-slate-500 text-xs">No skills configured. Edit profile settings to add your skill tags.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Project feed listing -->
+      <div class="glass-card p-6 rounded-xl">
+        <div class="flex items-center justify-between mb-6 pb-2 border-b border-slate-800">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider font-mono">
+            <i class="fa-solid fa-laptop-code text-cyan-400 mr-1.5"></i> Project Portfolio
+          </h3>
+          <a href="{{ url_for('student_profile') }}" class="text-xs text-cyan-400 hover:underline"><i class="fa-solid fa-plus text-[10px] mr-1"></i> Add Project</a>
+        </div>
+
+        <div class="space-y-4">
+          {% if projects %}
+            {% for proj in projects %}
+            <div class="p-5 rounded-xl bg-slate-900/40 border border-slate-850 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-slate-800 transition-colors">
+              <div class="space-y-1.5 max-w-xl">
+                <div class="flex items-center gap-2">
+                  <h4 class="text-sm font-bold text-slate-250">{{ proj.title }}</h4>
+                  <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono
+                    {% if proj.status == 'Completed' %}bg-emerald-950/40 border border-emerald-500/20 text-emerald-400
+                    {% elif proj.status == 'Active' %}bg-cyan-950/40 border border-cyan-500/20 text-cyan-400
+                    {% else %}bg-orange-950/40 border border-orange-500/20 text-orange-400{% endif %}">
+                    {{ proj.status }}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">{{ proj.description }}</p>
+                {% if proj.github_url %}
+                <a href="{{ proj.github_url }}" target="_blank" class="text-xs text-cyan-400 hover:text-cyan-300 font-mono inline-flex items-center gap-1">
+                  <i class="fa-brands fa-github text-sm"></i> GitHub Source
+                </a>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="text-center py-10 border border-dashed border-slate-850 rounded-xl text-slate-500 text-xs">
+              No portfolio projects submitted. Visit profile settings to add your codebases.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Section: Notices and events -->
+    <div class="lg:col-span-1 space-y-6">
+      
+      <!-- Bulletins -->
+      <div class="glass-card p-6 rounded-xl">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider font-mono">
+            <i class="fa-solid fa-bullhorn text-indigo-400 mr-1.5"></i> Notice Bulletin
+          </h3>
+          <a href="{{ url_for('student_announcements') }}" class="text-[10px] text-indigo-400 hover:underline">View All</a>
+        </div>
+
+        <div class="space-y-4">
+          {% if announcements %}
+            {% for ann in announcements %}
+            <div class="text-xs space-y-1.5 p-3 rounded-lg bg-slate-900/60 border border-slate-850/80">
+              <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>By Admin</span>
+                <span>{{ ann.date_posted.strftime('%m-%d') }}</span>
+              </div>
+              <h4 class="font-bold text-slate-350 leading-snug">{{ ann.title }}</h4>
+              <p class="text-slate-400 leading-normal">{{ ann.content|truncate(80) }}</p>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-slate-500 text-xs text-center py-4">No active notices.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div class="glass-card p-6 rounded-xl">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider font-mono">
+            <i class="fa-regular fa-calendar-check text-orange-400 mr-1.5"></i> Upcoming Events
+          </h3>
+          <a href="{{ url_for('student_events') }}" class="text-[10px] text-orange-400 hover:underline">Full Feed</a>
+        </div>
+
+        <div class="space-y-3">
+          {% if events %}
+            {% for ev in events[:3] %}
+            <div class="text-xs p-3 rounded-lg border border-slate-850 flex items-center justify-between bg-slate-950/20">
+              <div class="space-y-0.5">
+                <span class="font-bold text-slate-300 block">{{ ev.title }}</span>
+                <span class="text-[9px] text-slate-500 font-mono">{{ ev.date }}</span>
+              </div>
+              <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono bg-slate-800 text-slate-400 border border-slate-700">
+                {{ ev.type }}
+              </span>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-slate-500 text-xs text-center py-4">No events posted.</p>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

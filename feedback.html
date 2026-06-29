@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Feedback Desk - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-6">
+  
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <span class="text-xs text-cyan-400 font-semibold uppercase tracking-wider font-mono">Support / Helpdesk</span>
+      <h1 class="text-2xl font-bold text-white flex items-center gap-2 mt-1">
+        <i class="fa-regular fa-comment-dots text-cyan-400"></i> Suggestion & Feedback Desk
+      </h1>
+    </div>
+    <a href="{{ url_for('student_dashboard') }}" class="px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 text-xs font-semibold rounded-lg transition-all">
+      <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <!-- Submit Feedback Form -->
+    <div class="glass-card p-6 rounded-xl md:col-span-1 h-fit">
+      <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono mb-4 pb-2 border-b border-slate-800">
+        <i class="fa-solid fa-pen-nib text-cyan-400 mr-1.5"></i> Submit Feedback
+      </h3>
+
+      <form action="{{ url_for('student_feedback') }}" method="POST" class="space-y-4">
+        <div>
+          <label for="content" class="block text-[10px] font-semibold text-slate-450 uppercase tracking-wider mb-2">Description</label>
+          <textarea name="content" id="content" required rows="5" placeholder="Share complaints, lab issues, or general requests..." 
+            class="glass-input w-full p-3 rounded-lg text-xs focus:outline-none placeholder-slate-600"></textarea>
+        </div>
+
+        <button type="submit" 
+          class="w-full h-10 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-lg shadow-cyan-500/10 transition-all">
+          Submit Desk Ticket
+        </button>
+      </form>
+    </div>
+
+    <!-- Active Tickets Listing -->
+    <div class="glass-card rounded-xl overflow-hidden md:col-span-2">
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+        <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">My Feedback Tickets</h3>
+        <span class="text-[10px] text-slate-450 font-mono">{{ feedbacks|length }} Submitted</span>
+      </div>
+
+      <div class="divide-y divide-slate-850">
+        {% if feedbacks %}
+          {% for fb in feedbacks %}
+          <div class="p-5 space-y-3 hover:bg-slate-900/10 transition-colors">
+            <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono">
+              <span>Ticket ID: #CC-FB{{ fb.id }}</span>
+              <span>{{ fb.date_submitted.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            
+            <p class="text-xs text-slate-300 leading-normal">{{ fb.content }}</p>
+            
+            <!-- Response Block -->
+            <div class="p-3 rounded-lg bg-slate-950/40 border border-slate-850 text-xs">
+              <span class="font-bold text-slate-450 uppercase text-[9px] block tracking-wide font-mono mb-1">Assessor Response</span>
+              {% if fb.reply %}
+                <p class="text-slate-300 leading-relaxed">{{ fb.reply }}</p>
+              {% else %}
+                <span class="text-slate-550 italic">Pending review from faculty.</span>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="p-12 text-center text-slate-500 text-sm">
+            No feedback entries submitted yet. Your concerns will show here.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
